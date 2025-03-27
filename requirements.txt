@@ -4,3 +4,4 @@ firebase-admin==6.4.0
 google-cloud-firestore==2.13.0
 gTTS==2.5.1
 python-dotenv==1.0.1
+gunicorn
