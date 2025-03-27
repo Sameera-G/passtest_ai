@@ -1,0 +1,169 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+    body {
+        background-image: url("{{ url_for('static', filename='images/background_welcome.jpg') }}");
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        color: white;
+    }
+
+    .welcome-container {
+        background-color: rgba(0, 0, 0, 0.7);
+        padding: 50px 30px;
+        border-radius: 16px;
+        text-align: center;
+        box-shadow: 0 0 25px rgba(0, 0, 0, 0.5);
+        animation: fadeInUp 1.5s ease;
+        position: relative;
+    }
+
+    .ribbon {
+        position: absolute;
+        top: -10px;
+        right: -10px;
+        background: #ff4081;
+        color: white;
+        padding: 10px 20px;
+        font-weight: bold;
+        transform: rotate(45deg);
+        box-shadow: 0 0 10px rgba(0,0,0,0.5);
+        z-index: 10;
+        animation: ribbonWave 1s ease-in-out infinite alternate;
+    }
+
+    @keyframes ribbonWave {
+        0% { transform: rotate(45deg) scale(1); }
+        100% { transform: rotate(45deg) scale(1.05); }
+    }
+
+    .welcome-container h1 {
+        animation: bounceIn 1.2s ease forwards;
+    }
+
+    .welcome-container p {
+        animation: fadeIn 2s ease forwards;
+    }
+
+    .welcome-container .btn {
+        animation: fadeInZoom 2.5s ease forwards;
+    }
+
+    @keyframes fadeInUp {
+        0% {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        100% {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes bounceIn {
+        0% {
+            transform: scale(0.8);
+            opacity: 0;
+        }
+        60% {
+            transform: scale(1.1);
+            opacity: 1;
+        }
+        100% {
+            transform: scale(1);
+        }
+    }
+
+    @keyframes fadeInZoom {
+        0% {
+            opacity: 0;
+            transform: scale(0.9);
+        }
+        100% {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+
+    @keyframes fadeIn {
+        0% {
+            opacity: 0;
+        }
+        100% {
+            opacity: 1;
+        }
+    }
+
+    .highlight-text {
+        color: #ffc107;
+        font-size: 1.6rem;
+        font-weight: bold;
+        animation: glow 2s ease-in-out infinite alternate;
+    }
+
+    @keyframes glow {
+        from {
+            text-shadow: 0 0 5px #ffc107;
+        }
+        to {
+            text-shadow: 0 0 20px #ffc107;
+        }
+    }
+
+    .explanation-text {
+        font-size: 1rem;
+        margin-top: 30px;
+        line-height: 1.6;
+        animation: fadeInLoop 6s ease-in-out infinite alternate;
+    }
+
+    @keyframes fadeInLoop {
+        0% {
+            opacity: 0.4;
+        }
+        100% {
+            opacity: 1;
+        }
+    }
+
+    .description-box {
+        margin-top: 30px;
+        padding: 20px;
+        background-color: rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        font-size: 0.95rem;
+    }
+</style>
+
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 90vh;">
+    <div class="welcome-container">
+        <div class="ribbon">AI Powered</div>
+        <h1 class="mb-4">👋 Welcome to <strong>PassTest AI</strong></h1>
+        <p class="mb-4">This is your best place to prepare for the IELTS exam with<br>
+            <span class="highlight-text">Unlimited Resources</span>, personalized feedback, and real-time AI evaluation.
+        </p>
+        <div class="d-flex justify-content-center gap-3 mb-4">
+            <a href="/signup" class="btn btn-primary btn-lg">Sign Up</a>
+            <a href="/login" class="btn btn-outline-light btn-lg">Log In</a>
+        </div>
+        <div class="explanation-text">
+            Prepare for all four IELTS modules — <strong>Reading</strong>, <strong>Listening</strong>, <strong>Writing</strong>, and <strong>Speaking</strong>.<br>
+            Each section is designed to simulate the real test environment with instant AI-powered feedback.
+        </div>
+        <div class="description-box mt-4">
+            🚀 Whether you're aiming for academic or general training, PassTest AI adapts to your level and goals.<br>
+            🔍 Analyze your strengths and weaknesses after each session.<br>
+            🎯 Keep improving with intelligently generated tasks based on your past performance.
+        </div>
+    </div>
+</div>
+
+<script>
+    document.body.style.opacity = 0;
+    window.onload = () => {
+        document.body.style.transition = "opacity 1s ease-in-out";
+        document.body.style.opacity = 1;
+    };
+</script>
+{% endblock %}

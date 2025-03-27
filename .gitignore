@@ -1,0 +1,3 @@
+# Ignore Firebase credentials
+*.json
+.env

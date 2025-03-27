@@ -1,0 +1,222 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+    body {
+        background-image: url("{{ url_for('static', filename='images/background_reading.jpg') }}");
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+    }
+
+    .navbar-custom {
+        background-color: rgba(0, 0, 0, 0.8);
+    }
+
+    .navbar-custom .nav-link, .navbar-custom .navbar-brand {
+        color: white;
+    }
+
+    .highlight-input {
+        border: 2px solid red;
+    }
+</style>
+
+<!-- Navigation Bar -->
+<nav class="navbar navbar-expand-lg navbar-custom shadow-sm mb-4">
+    <div class="container">
+        <a class="navbar-brand" href="#">📘 IELTS Practice</a>
+        <div class="collapse navbar-collapse justify-content-end">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="/home">🏠 Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/" onclick="logout()">🚪 Logout</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container mt-4">
+    <div class="row">
+        <!-- LEFT: Reading Passage -->
+        <div class="col-md-6">
+            <h2 class="mb-3 text-white">📖 Reading Practice</h2>
+            <button class="btn btn-primary mb-4" onclick="generateContent()">✨ Generate New Content</button>
+            <div id="passage" class="p-3 bg-light rounded shadow-sm" style="min-height: 300px;"></div>
+        </div>
+
+        <!-- RIGHT: Questions -->
+        <div class="col-md-6">
+            <h4 class="mb-2 text-white">📝 Questions & Answers</h4>
+            <p class="text-white"><strong>Instructions:</strong></p>
+            <ul class="text-white">
+                <li>Answer questions 1-3 with TRUE, FALSE, or NOT GIVEN.</li>
+                <li>Answer questions 4-6 with ONE WORD from the passage.</li>
+            </ul>
+            <form id="answerForm">
+                <div class="row g-3" id="questionsArea">
+                    {% for i in range(6) %}
+                    <div class="col-12">
+                        <div class="card p-3 shadow-sm bg-white">
+                            <label for="answer{{ i+1 }}" class="form-label" id="questionLabel{{ i+1 }}"><strong>Q{{ i+1 }}:</strong></label>
+                            <input id="answer{{ i+1 }}" name="answer{{ i+1 }}" class="form-control" type="text" />
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="text-end">
+                    <button type="submit" class="btn btn-success mt-3">Submit Answers</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Overlay & Score Modal -->
+<div id="resultOverlay" class="d-none position-fixed top-0 start-0 w-100 h-100" style="background-color: rgba(0, 0, 0, 0.7); z-index: 9998;"></div>
+<div id="scoreModal" class="d-none position-fixed top-50 start-50 translate-middle text-white rounded-3 shadow-lg p-4"
+     style="background-color: rgba(33, 37, 41, 0.95); z-index: 9999; max-width: 600px; width: 90%; max-height: 80vh; overflow-y: auto; text-align: justify;">
+
+    <div class="mb-3">
+        <h5 class="m-0 text-center">📊 Test Results</h5>
+    </div>
+
+    <div id="scoreResult" style="font-size: 1rem;"></div>
+
+    <div class="text-center d-flex justify-content-center gap-2 mt-4">
+        <button class="btn btn-warning" onclick="closeResultAndRegenerate()">🔄 Generate Again</button>
+        <button class="btn btn-secondary" onclick="closeModalOnly()">Close</button>
+    </div>
+</div>
+
+
+<!-- Alert Modal -->
+<div id="alertModal" class="d-none position-fixed top-50 start-50 translate-middle text-white rounded-3 shadow-lg p-4 text-center"
+     style="background-color: rgba(220, 53, 69, 0.95); z-index: 10000; max-width: 400px; width: 90%;">
+    <p style="font-size: 1.1rem; font-weight: 500;">⚠️ Please answer all the questions before submitting.</p>
+    <button class="btn btn-light btn-sm mt-3" onclick="closeAlert()">Close</button>
+</div>
+
+<script>
+function generateContent() {
+    fetch("/generate_content", { method: "POST" })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            const text = data.content;
+            const lines = text.split(/\n+/).filter(line => line.trim());
+
+            let passageLines = [];
+            let questions = [];
+
+            lines.forEach(line => {
+                const match = line.match(/^\d+\.\s+(.*)/);
+                if (match) {
+                    questions.push(match[1].trim());
+                } else if (!line.toLowerCase().includes("instructions") && !line.toLowerCase().includes("questions:")) {
+                    passageLines.push(line);
+                }
+            });
+
+            document.getElementById("passage").innerText = passageLines.join(" ").trim();
+
+            while (questions.length < 6) {
+                questions.push("[Question missing]");
+            }
+
+            for (let i = 0; i < 6; i++) {
+                if (!questions[i] || questions[i].length < 5 || !/[a-zA-Z]/.test(questions[i])) {
+                    questions[i] = "[Question missing]";
+                } else if (!/[?.:]$/.test(questions[i].trim())) {
+                    questions[i] = questions[i].trim() + ":";
+                }
+            }
+
+            setTimeout(() => {
+                for (let i = 0; i < 6; i++) {
+                    const label = document.getElementById(`questionLabel${i + 1}`);
+                    const input = document.getElementById(`answer${i + 1}`);
+                    if (label) label.innerHTML = `<strong>Q${i + 1}:</strong> ${questions[i]}`;
+                    if (input) input.value = "";
+                }
+            }, 1000);
+        } else {
+            alert("❌ Error generating content: " + data.error);
+        }
+    });
+}
+
+document.getElementById("answerForm").addEventListener("submit", function(event) {
+    event.preventDefault();
+
+    const inputs = Array.from(this.querySelectorAll("input"));
+    let allFilled = true;
+
+    inputs.forEach(input => input.classList.remove("highlight-input"));
+
+    inputs.forEach(input => {
+        if (!input.value.trim()) {
+            input.classList.add("highlight-input");
+            allFilled = false;
+        }
+    });
+
+    if (!allFilled) {
+        document.getElementById("alertModal").classList.remove("d-none");
+        document.getElementById("resultOverlay").classList.remove("d-none");
+        return;
+    }
+
+    const answers = inputs.map(el => el.value);
+    const questions = Array.from(this.querySelectorAll("label")).map(label => label.textContent);
+    const passage = document.getElementById("passage").innerText;
+
+    fetch("/submit_answers", {
+        method: "POST",
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ answers, questions, passage })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            const scoreMatch = data.score.match(/(\\d+)%?/);
+            let scoreValue = scoreMatch ? parseInt(scoreMatch[1]) : null;
+
+            const scoreBox = document.getElementById("scoreResult");
+            scoreBox.innerHTML = `
+                <div style="font-size: 1rem; font-weight: bold; text-align: center;">Your Score: ${scoreValue !== null ? scoreValue + '%' : data.score}</div>
+                <hr>
+                
+                <br><div><strong>Generate another test clicking the below button</strong></div>
+            `;
+
+            document.getElementById("scoreModal").classList.remove("d-none");
+            document.getElementById("resultOverlay").classList.remove("d-none");
+        } else {
+            alert("❌ Error scoring answers: " + data.error);
+        }
+    });
+});
+
+function closeResultAndRegenerate() {
+    closeModalOnly();
+    generateContent();
+}
+
+function closeModalOnly() {
+    document.getElementById("scoreModal").classList.add("d-none");
+    document.getElementById("resultOverlay").classList.add("d-none");
+}
+
+function closeAlert() {
+    document.getElementById("alertModal").classList.add("d-none");
+    document.getElementById("resultOverlay").classList.add("d-none");
+}
+
+function logout() {
+    window.location.href = "/";
+}
+</script>
+{% endblock %}

@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+    body {
+        background-image: url("{{ url_for('static', filename='images/background_payment.jpg') }}");
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        color: white;
+    }
+
+    .payment-box {
+        background-color: rgba(0, 0, 0, 0.75);
+        padding: 40px 30px;
+        border-radius: 16px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+        width: 100%;
+        max-width: 400px;
+        animation: fadeInDown 1.2s ease;
+    }
+
+    @keyframes fadeInDown {
+        0% {
+            opacity: 0;
+            transform: translateY(-30px);
+        }
+        100% {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+
+<!-- Navigation Bar -->
+<nav class="navbar navbar-expand-lg navbar-custom shadow-sm mb-4" style="background-color: rgba(0, 0, 0, 0.8);">
+    <div class="container">
+        <a class="navbar-brand text-white" href="#">📘 IELTS Practice</a>
+    </div>
+</nav>
+
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 90vh;">
+    <div class="payment-box">
+        <h2 class="text-center mb-4">💳 Enter Dummy Payment Info</h2>
+        <form method="POST">
+            <input class="form-control mb-3" type="text" placeholder="Card Number" required>
+            <input class="form-control mb-3" type="text" placeholder="Name on Card" required>
+            <input class="form-control mb-3" type="text" placeholder="MM/YY" required>
+            <input class="form-control mb-3" type="text" placeholder="CVV" required>
+            <div class="text-center">
+                <button class="btn btn-success w-100" type="submit">Proceed to Home</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    document.body.style.opacity = 0;
+    window.onload = () => {
+        document.body.style.transition = "opacity 1s ease-in-out";
+        document.body.style.opacity = 1;
+    };
+</script>
+{% endblock %}

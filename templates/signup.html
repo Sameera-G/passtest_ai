@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+    body {
+        background-image: url("{{ url_for('static', filename='images/background_welcome.jpg') }}");
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        color: white;
+    }
+
+    .signup-box {
+        background-color: rgba(0, 0, 0, 0.75);
+        padding: 40px 30px;
+        border-radius: 16px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+        width: 100%;
+        max-width: 400px;
+        animation: fadeInDown 1.2s ease;
+    }
+
+    @keyframes fadeInDown {
+        0% {
+            opacity: 0;
+            transform: translateY(-30px);
+        }
+        100% {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 90vh;">
+    <div class="signup-box">
+        <h2 class="text-center mb-4">📝 Sign Up</h2>
+        <form method="POST">
+            <input class="form-control mb-3" type="email" name="email" placeholder="Email" required>
+            <input class="form-control mb-3" type="password" name="password" placeholder="Password" required>
+            <div class="text-center">
+                <button class="btn btn-success w-100" type="submit">Create Account</button>
+            </div>
+        </form>
+        <div class="text-center mt-4">
+            <p>If you already have an account, log in below.</p>
+            <a href="/login" class="btn btn-outline-light">Log In</a>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.body.style.opacity = 0;
+    window.onload = () => {
+        document.body.style.transition = "opacity 1s ease-in-out";
+        document.body.style.opacity = 1;
+    };
+</script>
+{% endblock %}
