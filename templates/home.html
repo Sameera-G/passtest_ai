@@ -1,71 +1,305 @@
 {% extends 'base.html' %}
 {% block content %}
+<!-- ====== ORIGINAL DARK SECTION START ====== -->
 <style>
-    body {
-        background-image: url("{{ url_for('static', filename='images/background_home.jpg') }}");
-        background-size: cover;
-        background-repeat: no-repeat;
-        background-attachment: fixed;
+    * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+  :root {
+    --reading-primary: #6EE7B7;
+    --listening-primary: #93C5FD;
+    --writing-primary: #F9A8D4;
+    --speaking-primary: #FCD34D;
+    --glass-bg: rgba(255, 255, 255, 0.04);
+    --glass-border: rgba(255, 255, 255, 0.1);
+  }
+
+  html, body {
+    font-family: 'Inter', sans-serif;
+    background-color: #000000;
+    background-image: url('/static/images/mainbackground.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    color: #f9fafb;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: "";
+    position: fixed;
+    top: -20%;
+    left: -20%;
+    width: 140vw;
+    height: 140vh;
+    background: conic-gradient(from 0deg, #6366f1, #3b82f6, #14b8a6, #f59e0b, #f43f5e, #6366f1);
+    z-index: -1;
+    animation: spinGradient 40s linear infinite;
+    filter: blur(200px) opacity(0.1);
+  }
+
+  @keyframes spinGradient {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+    .navbar-custom .container {
+    margin: 0;
+    padding: 0;
     }
 
-    .navbar-custom {
-        background-color: rgba(0, 0, 0, 0.8);
+
+  .navbar-custom {
+    position: relative;
+    top: 0;
+    left: 0;
+    width: 100%;
+    margin: 0;
+    padding: 0.1rem 1.5rem;
+    background-color: transparent;
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--glass-border);
+    animation: slideDown 1s ease-out;
+    z-index: 1000;
+  }
+
+  @keyframes slideDown {
+    0% {
+      transform: translateY(-100%);
+      opacity: 0;
+    }
+    100% {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  .navbar-custom .navbar-brand {
+    font-weight: 700;
+    color: #f9fafb;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+
+  .brand-icon {
+    width: 34px;
+    height: 34px;
+    background: linear-gradient(135deg, #6366f1, #3b82f6);
+    color: white;
+    border-radius: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+  }
+
+  .logout-btn {
+    background: linear-gradient(to right, #ef4444, #b91c1c);
+    color: white;
+    border: none;
+    padding: 0.4rem 1rem;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    transition: transform 0.2s ease;
+  }
+
+  .logout-btn:hover {
+    transform: scale(1.05);
+  }
+
+  .section-title {
+    font-size: 2.8rem;
+    font-weight: 800;
+    margin-top: 1rem;
+    margin-bottom: 2rem;
+    background: linear-gradient(90deg, #6366f1, #14b8a6);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    animation: pulseTitle 3s ease-in-out infinite;
+  }
+
+  @keyframes pulseTitle {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.02); }
+  }
+
+  .cards-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: 2rem;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+
+  .flip-card {
+    text-decoration: none;
+    color: inherit;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 1.5rem;
+    box-shadow: 0 10px 25px rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(24px);
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    aspect-ratio: 1 / 1;
+    opacity: 0;
+    animation: fadeInUp 1s ease forwards;
+  }
+
+  .flip-card:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 20px 40px rgba(255, 255, 255, 0.1);
+  }
+
+  .flip-card:nth-child(1) { animation-delay: 0.1s; }
+  .flip-card:nth-child(2) { animation-delay: 0.2s; }
+  .flip-card:nth-child(3) { animation-delay: 0.3s; }
+  .flip-card:nth-child(4) { animation-delay: 0.4s; }
+
+  @keyframes fadeInUp {
+    0% {
+      opacity: 0;
+      transform: translateY(40px) scale(0.95);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  .flip-icon {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .flip-title {
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 0.3rem;
+    text-align: center;
+  }
+
+  .flip-desc {
+    font-size: 0.9rem;
+    text-align: center;
+    color: #cbd5e1;
+  }
+
+  @media (max-width: 600px) {
+    .section-title {
+      font-size: 2rem;
     }
 
-    .navbar-custom .nav-link,
-    .navbar-custom .navbar-brand {
-        color: white;
+    .cards-container {
+      grid-template-columns: 1fr;
+      grid-template-rows: auto;
     }
-
-    .welcome-box {
-        background-color: rgba(0, 0, 0, 0.7);
-        padding: 40px 20px;
-        border-radius: 16px;
-        box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
-    }
-
-    .welcome-box h1 {
-        color: white;
-        font-weight: bold;
-        margin-bottom: 30px;
-    }
-
-    .welcome-box .btn {
-        min-width: 150px;
-        font-weight: bold;
-    }
+  }
 </style>
 
-<!-- Navigation Bar -->
-<nav class="navbar navbar-expand-lg navbar-custom shadow-sm mb-4">
-    <div class="container">
-        <a class="navbar-brand" href="#">📘 IELTS Practice</a>
-        <div class="collapse navbar-collapse justify-content-end">
-            <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link" href="/" onclick="logout()">🚪 Logout</a>
-                </li>
-            </ul>
-        </div>
-    </div>
+<!-- ====== ANIMATED HEADER START ====== -->
+<nav class="navbar navbar-expand-lg navbar-custom">
+  <div class="container d-flex justify-content-between align-items-center">
+    <a class="navbar-brand" href="#">
+      <div class="brand-icon">IE</div>
+      IELTS Practice
+    </a>
+    <button class="logout-btn" onclick="logout()">🚪 Logout</button>
+  </div>
 </nav>
+<!-- ====== ANIMATED HEADER END ====== -->
 
-<!-- Main Content -->
-<div class="container d-flex justify-content-center align-items-center" style="min-height: 70vh;">
-    <div class="welcome-box text-center">
-        <h1>Welcome to IELTS exam prep</h1>
-        <div class="d-flex flex-wrap justify-content-center gap-3">
-            <a class="btn btn-primary" href="/reading">📖 Reading</a>
-            <a class="btn btn-info" href="/listening">🎧 Listening</a>
-            <a class="btn btn-warning" href="/writing">✍️ Writing</a>
-            <a class="btn btn-danger" href="/speaking">🗣️ Speaking</a>
-        </div>
-    </div>
+<div class="container text-center mb-5">
+  <h1 class="section-title">Master Your IELTS Exam</h1>
+
+  <div class="cards-container">
+    <a href="/reading" class="flip-card" style="color: var(--reading-primary)">
+      <div class="flip-icon">📖</div>
+      <div class="flip-title">Reading</div>
+      <div class="flip-desc">Practice comprehension with real passages.</div>
+    </a>
+
+    <a href="/listening" class="flip-card" style="color: var(--listening-primary)">
+      <div class="flip-icon">🎧</div>
+      <div class="flip-title">Listening</div>
+      <div class="flip-desc">Sharpen your listening with practice audio.</div>
+    </a>
+
+    <a href="/writing" class="flip-card" style="color: var(--writing-primary)">
+      <div class="flip-icon">✍️</div>
+      <div class="flip-title">Writing</div>
+      <div class="flip-desc">Task 1 and 2 guided practice.</div>
+    </a>
+
+    <a href="/speaking" class="flip-card" style="color: var(--speaking-primary)">
+      <div class="flip-icon">🗣️</div>
+      <div class="flip-title">Speaking</div>
+      <div class="flip-desc">Answer topics with feedback.</div>
+    </a>
+  </div>
 </div>
 
+<!-- ====== NEWSPAPER-STYLE SECTION START ====== -->
+<div style="background: #ffffff; color: #1f2937; font-family: 'Inter', sans-serif;">
+  <header style="background: #0f172a; color: white; padding: 2rem; text-align: center;">
+    <h1 style="margin: 0; font-size: 2.5rem;">IELTS EXAM OVERVIEW</h1>
+    <p>Understand the path to mastering the international English language test</p>
+  </header>
+
+  <section style="max-width: 1000px; margin: 2rem auto; padding: 2rem; background: #f9fafb; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);">
+    <div style="margin-bottom: 2rem;">
+      <h2 style="font-size: 2rem; color: #111827;">What is IELTS?</h2>
+      <p>The International English Language Testing System (IELTS) is one of the most recognized English proficiency exams in the world. It evaluates the English language skills of non-native speakers who wish to study, work, or migrate to English-speaking countries.</p>
+      <img src="https://upload.wikimedia.org/wikipedia/commons/7/7f/IELTS_logo.svg" alt="IELTS logo" style="max-width: 100%; border-radius: 8px; margin: 1rem 0;">
+    </div>
+
+    <div style="margin-bottom: 2rem;">
+      <h2>Reading Section</h2>
+      <p>40 questions that test comprehension, detail, inference, and opinion recognition. You’ll read passages from books, journals, and newspapers.</p>
+    </div>
+
+    <div style="margin-bottom: 2rem;">
+      <h2>Listening Section</h2>
+      <p>Four audio recordings of native English speakers followed by questions. This section tests your ability to understand facts, opinions, and follow ideas logically.</p>
+    </div>
+
+    <div style="margin-bottom: 2rem;">
+      <h2>Writing Section</h2>
+      <p>Two writing tasks that include describing visual data and responding to a specific point of view or problem. It evaluates organization, vocabulary, and grammar.</p>
+    </div>
+
+    <div style="margin-bottom: 2rem;">
+      <h2>Speaking Section</h2>
+      <p>A face-to-face interview with an examiner. It covers introduction, short speech, and discussion topics. It tests fluency, vocabulary, grammar, and pronunciation.</p>
+    </div>
+  </section>
+
+  <footer style="text-align: center; padding: 1rem; background: #e5e7eb; color: #4b5563;">
+    &copy; 2025 IELTS Practice | Designed with clarity for aspiring achievers.
+  </footer>
+</div>
+
+<!-- Google Font -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-function logout() {
+  function logout() {
     window.location.href = "/";
-}
+  }
 </script>
 {% endblock %}
